@@ -1,9 +1,12 @@
 <?php
 
 use App\Models\Student;
+use App\Models\Course;
+use App\Enums\Difficulty;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,7 +35,7 @@ Route::post('/students/', function (Request $request) {
 
     $student = Student::create($validated);
 
-    return redirect()->route('students.index') -> with('success', "Students {$student->name} created successfully");
+    return redirect()->route('students.index') -> with('success', "Student {$student->name} created successfully");
 });
 
 Route::get('/students/{id}', function ($id) {
@@ -61,7 +64,7 @@ Route::put('/students/{id}', function (Request $request, $id) {
     ]);
 
     $student->update($validated);
-    return redirect('/students/' . $student->id) -> with('success', 'Student Updated Successfully!');
+    return redirect('/students/' . $student->id) -> with('success', "Student Updated Successfully!");
 });
 
 Route::delete('/students/{id}', function ($id) {
@@ -69,5 +72,75 @@ Route::delete('/students/{id}', function ($id) {
 
     $student->delete();
 
-    return redirect('/students/') -> with('success', 'Student Deleted Successfully');
+    return redirect('/students/') -> with('success', "Student Deleted Successfully");
+});
+
+
+
+Route::get("/courses/create", function () {
+    return view('course.create');
+});
+
+Route::get("/courses", function () {
+    $courses = Course::all();
+
+    return view('course.list', [ 
+        'courses' => $courses
+    ]);
+})->name('course.index');
+
+Route::post("/courses", function(Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string|max:500',
+        'duration' => 'required|integer|min:1',
+        'fee'=> 'required|decimal:2',
+        'difficulty'=> 'required|in:EASY,MEDIUM,HARD',
+        'is_active'=> 'required|boolean',
+    ]);
+
+    $course = Course::create($validated);
+
+    return redirect() -> route('course.index') -> with('success', "Course {$course->name} created successfully");
+});
+
+Route::get("/courses/{id}", function ($id) {
+    $course = Course::findOrFail($id);
+
+    return view('course.detail', [
+        'course' => $course
+    ]);
+});
+
+Route::get("/courses/{id}/edit", function (Request $request, $id) {
+    $course = Course::findOrFail($id);
+
+    return view('course.edit', [
+        'course' => $course
+    ]);
+});
+
+Route::put("/courses/{id}", function(Request $request, $id) {
+    $course = Course::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255', Rule::unique('courses')->ignore($course->id)],
+        'description' => 'required|string|max:500',
+        'duration' => 'required|integer|min:1',
+        'fee' => 'required|decimal:2',
+        'difficulty' => 'required|in:EASY,MEDIUM,HARD',
+        'is_active' => 'required|boolean'
+    ]);
+
+    $course->update($validated);
+    return redirect('/courses/' . $course->id)->with('success', "Course updated successfully.");
+});
+
+Route::delete("/courses/{id}", function($id) {
+    $course = Course::findOrFail($id);
+
+    $course->delete();
+
+    return redirect('/courses')->with('success', "Course Deleted Successfully");
+
 });
