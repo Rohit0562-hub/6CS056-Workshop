@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect("/students/");
 });
 
 Route::get('/students/create', function () {
