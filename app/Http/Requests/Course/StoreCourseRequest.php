@@ -4,6 +4,7 @@ namespace App\Http\Requests\Course;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCourseRequest extends FormRequest
 {

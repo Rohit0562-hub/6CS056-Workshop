@@ -52,7 +52,7 @@ class StudentController extends Controller
     /**
      * Remove the specified student.
      */
-    public function destroy(Stuednt $student): JsonResponse 
+    public function destroy(Student $student): JsonResponse 
     {
         $student->delete();
 
