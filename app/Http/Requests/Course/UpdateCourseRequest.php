@@ -4,6 +4,7 @@ namespace App\Http\Requests\Course;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCourseRequest extends FormRequest
 {
@@ -26,11 +27,11 @@ class UpdateCourseRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'description' => 'required|stirng|max:255',
+            'description' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
             'fee' => 'required|decimal:2',
             'difficulty' => 'required|in:EASY,MEDIUM,HARD',
-            'is_acive' => 'required|booelan',        
+            'is_active' => 'required|boolean',        
         ];
     }
 }
